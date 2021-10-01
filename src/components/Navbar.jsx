@@ -1,8 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme';
+import { setActiveUser } from '../redux/user';
+import { auth, googleAuthProvider } from '../firebase';
 
 export default function Navbar() {
   const theme = useSelector((state) => state.theme);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const navbarStyles = {
@@ -43,10 +46,27 @@ export default function Navbar() {
       </svg>
     );
 
+  const signInHandler = () => {
+    auth
+      .signInWithPopup(googleAuthProvider)
+      .then((result) => {
+        console.log(result.user);
+        const payload = {
+          uid: result.user.uid,
+          email: result.user.email,
+        };
+        dispatch(setActiveUser(payload));
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <nav className="navbar sticky-top" style={navbarStyles}>
       <div className="container">
         <div className="navbar-brand">Note App With Redux</div>
+        <div className="btn" onClick={signInHandler}>
+          Sign In : {user?.email}
+        </div>
         <div className="btn" onClick={() => dispatch(toggleTheme())}>
           {iconTheme}
         </div>
