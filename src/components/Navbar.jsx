@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme';
 import { setActiveUser } from '../redux/user';
 import { auth, googleAuthProvider } from '../firebase';
+import useSignInWithGoogle from '../hooks/auth/useActiveUser';
 
 export default function Navbar() {
   const theme = useSelector((state) => state.theme);
@@ -58,6 +59,7 @@ export default function Navbar() {
         dispatch(setActiveUser(payload));
       })
       .catch((error) => console.log(error));
+    // useSignInWithGoogle();
   };
 
   return (
