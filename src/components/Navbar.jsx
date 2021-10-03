@@ -3,6 +3,7 @@ import { toggleTheme } from '../redux/theme';
 import { setActiveUser, signOutUser } from '../redux/user';
 import { auth, googleAuthProvider } from '../firebase';
 import useSignInWithGoogle from '../hooks/auth/useActiveUser';
+import { deleteAllNotes } from '../redux/note';
 
 export default function Navbar() {
   const theme = useSelector((state) => state.theme);
@@ -66,6 +67,7 @@ export default function Navbar() {
       .signOut()
       .then(() => {
         dispatch(signOutUser());
+        dispatch(deleteAllNotes());
       })
       .catch((error) => console.log(error));
   };

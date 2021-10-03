@@ -12,6 +12,7 @@ export const noteSlice = createSlice({
     addNote: (state, action) => {
       const note = {
         id: uuidv4(),
+        created_at: action.payload.created_at,
         title: action.payload.title,
         body: action.payload.body,
       };
@@ -21,9 +22,12 @@ export const noteSlice = createSlice({
     deleteNote: (state, action) => {
       state.value = state.value.filter((note) => note.id !== action.id);
     },
+    deleteAllNotes: (state) => {
+      state.value = [];
+    },
   },
 });
 
-export const { addNote, deleteNote } = noteSlice.actions;
+export const { addNote, deleteNote, deleteAllNotes } = noteSlice.actions;
 
 export default noteSlice.reducer;

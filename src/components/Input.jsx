@@ -1,16 +1,16 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addNote } from '../redux/note';
 import { useRef } from 'react';
+import { db } from '../firebase';
 
 export default function Input() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   const titleRef = useRef(null);
   const bodyRef = useRef(null);
 
   const addNoteToStore = (e) => {
-    // e.preventDefault();
-
     if (!titleRef.current || !bodyRef.current) return;
 
     const title = titleRef.current.value;
@@ -21,11 +21,29 @@ export default function Input() {
       return;
     }
 
-    console.log(title, body);
-    dispatch(addNote({ title, body }));
+    const now = new Date();
 
-    titleRef.current.value = '';
-    bodyRef.current.value = '';
+    db.collection('notes')
+      .add({
+        uid: user.uid,
+        created_at: now,
+        title: title,
+        body: body,
+      })
+      .then(() => {
+        const note = {
+          created_at: Number(now.getTime() - now.getMilliseconds()) / 1000,
+          title,
+          body,
+        };
+        dispatch(addNote(note));
+        titleRef.current.value = '';
+        bodyRef.current.value = '';
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('sorry, there was an error');
+      });
   };
 
   return (
