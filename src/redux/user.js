@@ -15,9 +15,13 @@ export const userSlice = createSlice({
       state.uid = action.payload.uid;
       state.email = action.payload.email;
     },
+    signOutUser: (state) => {
+      state.uid = null;
+      state.email = null;
+    },
   },
 });
 
-export const { setActiveUser } = userSlice.actions;
+export const { setActiveUser, signOutUser } = userSlice.actions;
 
 export default userSlice.reducer;

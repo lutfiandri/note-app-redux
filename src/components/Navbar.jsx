@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme';
-import { setActiveUser } from '../redux/user';
+import { setActiveUser, signOutUser } from '../redux/user';
 import { auth, googleAuthProvider } from '../firebase';
 import useSignInWithGoogle from '../hooks/auth/useActiveUser';
 
@@ -59,16 +59,31 @@ export default function Navbar() {
         dispatch(setActiveUser(payload));
       })
       .catch((error) => console.log(error));
-    // useSignInWithGoogle();
+  };
+
+  const signOutHandler = () => {
+    auth
+      .signOut()
+      .then(() => {
+        dispatch(signOutUser());
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
     <nav className="navbar sticky-top" style={navbarStyles}>
       <div className="container">
         <div className="navbar-brand">Note App With Redux</div>
-        <div className="btn" onClick={signInHandler}>
-          Sign In : {user?.email}
-        </div>
+        <div>{user?.email}</div>
+        {user.uid === null ? (
+          <div className="btn" onClick={signInHandler}>
+            Sign In
+          </div>
+        ) : (
+          <div className="btn" onClick={signOutHandler}>
+            Log Out
+          </div>
+        )}
         <div className="btn" onClick={() => dispatch(toggleTheme())}>
           {iconTheme}
         </div>
